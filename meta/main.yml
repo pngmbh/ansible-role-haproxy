@@ -1,0 +1,27 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: unxnn
+  role_name: haproxy
+  description: HAProxy installation and configuration.
+  license: "license (MIT)"
+  min_ansible_version: 2.2
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Ubuntu
+      versions:
+        - precise
+        - trusty
+        - xenial
+        - disco
+  galaxy_tags:
+    - web
+    - networking
+    - cloud
+    - haproxy
+    - loadbalancer
+    - http
