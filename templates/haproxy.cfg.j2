@@ -38,19 +38,26 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
-frontend {{ haproxy_frontend_name }}
-    bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
-    mode {{ haproxy_frontend_mode }}
-    default_backend {{ haproxy_backend_name }}
+{% if haproxy_pools|default([])|length > 0 -%}
+{% for fe in haproxy_pools -%}
+frontend {{ fe.name }}
+    bind {{ fe.bind }}
+    mode {{ fe.mode }}
+    default_backend {{ fe.be[0].name }}
 
-backend {{ haproxy_backend_name }}
-    mode {{ haproxy_backend_mode }}
-    balance {{ haproxy_backend_balance_method }}
+{% for be in fe.be %}
+backend {{ be.name }}
+    mode {{ be.mode }}
+    balance {{ be.method }}
     option forwardfor
-{% if haproxy_backend_httpchk != '' %}
-    option httpchk {{ haproxy_backend_httpchk }}
-{% endif %}
     cookie SERVERID insert indirect
-{% for backend in haproxy_backend_servers %}
-    server {{ backend.name }} {{ backend.address }} cookie {{ backend.name }} check
+{% if be.check is defined and be.check != '' -%}
+    option httpchk {{ be.check }}
+{% endif -%}
+{% for srv in be.servers %}
+    server {{ srv.name }} {{ srv.address }} cookie {{ srv.name }} check
 {% endfor %}
+{% endfor %}
+
+{% endfor %}
+{% endif -%}
