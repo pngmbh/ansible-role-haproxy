@@ -21,5 +21,12 @@ haproxy_pools:
           # - name: app2
           #   address: 192.168.0.2:80
 
+
+haproxy_stats: True
+haproxy_stats_bind: '*:8080'
+haproxy_stats_uri: '/haproxy?stats'
+haproxy_stats_user: ''
+haproxy_stats_passwd: ''
+
 # Extra global vars (see README for example usage).
 haproxy_global_vars: []

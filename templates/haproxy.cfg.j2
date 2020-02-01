@@ -38,6 +38,19 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 {% endif %}
 
+{% if haproxy_stats %}
+frontend stats
+    mode http
+    bind {{ haproxy_stats_bind }}
+    stats enable
+    stats uri {{ haproxy_stats_uri }}
+    stats refresh 10s
+{% if haproxy_stats_user != '' %}
+    stats auth {{ haproxy_stats_user }}:{{ haproxy_stats_passwd }}
+{% endif %}
+    stats admin if LOCALHOST
+{% endif %}
+
 {% if haproxy_pools|default([])|length > 0 -%}
 {% for fe in haproxy_pools -%}
 frontend {{ fe.name }}
